@@ -66,7 +66,7 @@ if(isset($_GET['get_id'])){
     $dompdf->setOptions($options);
 
 // $url = 'http://localhost/my_admin/admin/pdf_print.php?get_id=' . urlencode($pid);
-$url = 'http://pariscablimousine.fr/admin/pdf_print.php?get_id=' . urlencode($pid);
+$url = 'http://booking.pariscablimousine.fr/admin/pdf_print.php?get_id=' . urlencode($pid);
 
 
 // Fetch the contents of the URL
