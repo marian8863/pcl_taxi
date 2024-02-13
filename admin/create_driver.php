@@ -16,12 +16,13 @@ $u_p = $_SESSION['user']['profile'];
 
 if(isset($_GET['get_id'])){
     $did=$_GET['get_id'];
-    $sql="SELECT dname,dtp_num from driver where d_id='$did'";
+    $sql="SELECT dname,dtp_num,driver_desc from driver where d_id='$did'";
     $result = mysqli_query($con,$sql);
     if(mysqli_num_rows($result)==1) {       
         $row=mysqli_fetch_assoc($result);
         $dn=$row['dname'];
         $dtp=$row['dtp_num'];
+        $driver_desc=$row['driver_desc'];
     }
 }
 ?>
@@ -91,6 +92,15 @@ if(isset($_GET['get_id'])){
                         <input type="text" class="form-control" name="dtp_num" value="<?php if(isset($_GET['get_id'])){ echo $dtp;}?>" placeholder="Enter ...">
                       </div>
                     </div>
+
+                    <div class="col-sm-12">
+                      <!-- textarea -->
+                      <div class="form-group">
+                        <label>Driver Desc</label>
+                        <textarea class="form-control" rows="3" placeholder="Enter ..." name="driver_desc" required><?php if(isset($_GET['get_id'])){ echo $driver_desc;}else{echo "Le règlement s'effectuera dans un délai de 10 jours suivant la réception de la facture. Les missions effectuées au cours du mois doivent être facturées à la fin du mois en question.";}?></textarea>
+                      </div>
+                    </div>
+
                   </div>
                   <div class="row">
                     <div class="col-sm-3">
@@ -136,8 +146,10 @@ if(isset($_POST['add'])){
     !empty($_POST['dtp_num'])){
         $dname=$_POST['dname'];
         $dtp_num=$_POST['dtp_num'];
+        $driver_desc=$_POST['driver_desc'];
+        
   
-        $sql="INSERT INTO `driver` (`dname`,`dtp_num`) values('$dname','$dtp_num')";
+        $sql="INSERT INTO `driver` (`dname`,`dtp_num`,`driver_desc`) values('$dname','$dtp_num','$driver_desc')";
         if(mysqli_query($con,$sql)){
             //$message ="<h5>New record created successfully</h5>";
           echo '<script>';
@@ -173,10 +185,13 @@ if(isset($_POST['edit'])){
     $d_id=$_GET['get_id'];
     $dname=$_POST['dname'];
     $dtp_num=$_POST['dtp_num'];
+    $driver_desc=$_POST['driver_desc'];
+    
 
   $sql='UPDATE  `driver`
   set `dname` ="'.$dname.'",
-  `dtp_num`="'.$dtp_num.'"
+  `dtp_num`="'.$dtp_num.'",
+  `driver_desc`="'.$driver_desc.'"
 
   where `d_id`="'.$did.'"';
   if(mysqli_query($con,$sql)){

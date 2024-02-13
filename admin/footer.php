@@ -134,15 +134,21 @@ $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href
       "responsive": true,
     });
 
-    $('#example3').DataTable({
+    $('.example3').DataTable({
       "paging": true,
       "lengthChange": false,
-      "searching": true,
+      "searching": false,
       "ordering": true,
       "info": true,
       "autoWidth": false,
       "responsive": true,
     });
+
+
+
+
+
+    
 </script>
 
 <script>

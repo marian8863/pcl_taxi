@@ -15,6 +15,7 @@ if(isset($_GET['get_id'])){
     passenger.chauffeur_desc,
     driver.dname,
     driver.dtp_num,
+    driver.driver_desc,
     passenger.Tarif,
     tarif_type.type_tt,
     select_an_option_desc.tm_id,
@@ -49,6 +50,7 @@ if(isset($_GET['get_id'])){
           $d_id=$row['d_id'];
           $dname=$row['dname'];
           $dtp_num=$row['dtp_num'];
+          $driver_desc=$row['driver_desc'];
           $Vehicule_num=$row['Vehicule_num'];
           $cha_d=$row['chauffeur_desc'];
           $Tarif=$row['Tarif'];
@@ -201,7 +203,17 @@ if(isset($_GET['get_id'])){
                     </tr>
                     <tr>
                     <th scope="row">Tarif</th>
-                    <td><?php echo '€ '.$Tarif;?> | <?php echo $type_tt;?></td>
+                    <td><?php echo '€ '.$Tarif;?> | <?php echo $type_tt;?> 
+
+                    <?php
+                    if($driver_desc == 'no_desc'){
+                        // echo "hi";
+
+                    }else{
+                         echo '<br> <br>'.$driver_desc;
+                    }
+                    ?>
+                    </td>
                     </tr>
 
                     <?php if($op_question == 'OnOption'){ ?>

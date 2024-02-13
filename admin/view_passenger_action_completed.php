@@ -46,53 +46,77 @@ $u_p = $_SESSION['user']['profile'];
 
   <!-- Main content -->
                   
-  <section class="content">
+
+
+
+                <?php
+// Assuming you've already established a mysqli connection
+
+// Execute the SELECT query
+$query = "SELECT distinct passenger.`p_id`,passenger.`passager_principal`,DATE_FORMAT(passenger.`date_de_prise_en_charge`, '%d-%b,%Y') AS formatted_date ,passenger.`Time`,passenger.`Tarif`,type_mission.`type_m`,driver.`dname`,passenger.`Create_job_action` 
+FROM passenger ,type_mission,driver where passenger.`tm_id`=type_mission.`tm_id` and passenger.`d_id`=driver.`d_id` and  passenger.`Create_job_action`='completed'   ORDER BY passenger.`date_de_prise_en_charge`";
+$result = mysqli_query($con, $query);
+
+if ($result) {
+    $previous_date = null;
+    while ($row = mysqli_fetch_assoc($result)) {
+        $current_date = $row['formatted_date'];
+        
+        // If the date changes, start a new table
+        if ($current_date !== $previous_date) {
+            if ($previous_date !== null) {
+                echo "</table>"; // Close previous table
+                ?>
+                </div>
+             <!-- /.card-body -->
+           </div>
+           <!-- /.card -->
+
+       
+         </div>
+         <!-- /.col -->
+       </div>
+       <!-- /.row -->
+     </div>
+     <!-- /.container-fluid -->
+   </section>
+   <?php
+            }
+            
+            // echo "$current_date";
+        ?>
+          <section class="content">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
             <div class="card">
-              <!-- <div class="card-header">
-                <h3 class="card-title">DataTable with minimal features & hover style</h3>
-              </div> -->
-              <!-- /.card-header -->
+              <div class="card-header" style="background-color:#f4f6f9">
+                <h2 class="card-title"><?php echo "$current_date"; ?></h2>
+              </div>
 
               <div class="card-body">
-              <!-- <div class="row">
-                <div class="col-9">
-                </div>
-                <div class="col-3">
-                    <a href="create_booking" class="btn btn-primary btn-block"> + Add</a>
-
-                </div>
-                </div>
-                <br> -->
-
-                <table id="example3"  class="table table-bordered table-striped">
+                <table   class="example3 table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <!-- <th data-visible="false">Id</th> --> 
+                  
                     <th>Référence</th>
-                    <th>Date</th>
+                    <th>Passager Principal</th>
                     <th>Time</th>
                     <th>Type de Mission</th>
-                    <!-- <th>Passager Principal</th> -->
+                  
                     <th>Tarif</th>
                     <th>Action</th>
-                    <!-- <th data-visible="false">Create Date</th> -->
+                  
                   </tr>
                   </thead>
                   <tbody>
-               
-                  <?php  
-                    $sql="SELECT distinct passenger.`p_id`,passenger.`passager_principal`,passenger.`date_de_prise_en_charge`,passenger.`Time`,passenger.`Tarif`,type_mission.`type_m`,driver.`dname`,passenger.`Create_job_action` 
-                    FROM passenger ,type_mission,driver where passenger.`tm_id`=type_mission.`tm_id` and passenger.`d_id`=driver.`d_id` and  passenger.`Create_job_action`='completed'";         
-                    $res=$con->query($sql);
-                    while($row=$res->fetch_assoc()){    
-                            
-                    ?>
+        <?php
+        }
+        ?>
+        
                     <tr>
                         <td><a href="create_passenger_action.php?get_id=<?= $row["p_id"]?>"><?= "PCL1000".$row['p_id']?></td>
-                        <td><?= $row['date_de_prise_en_charge']?></td>
+                        <td><?= $row['passager_principal']?></td>
                         <td><?= $row['Time']?></td>
                         <td><?= $row['type_m']?></td>
                         <!-- <td>< $row['passager_principal']?></td> -->
@@ -105,13 +129,20 @@ $u_p = $_SESSION['user']['profile'];
 
                         <!--  -->
                     </tr>
-                    <?php } ?>
+                    
                   
-                  </tbody>
-                  </tfoot>
-                </table>
-  
-              </div>
+        <?php
+        $previous_date = $current_date;
+    }
+    
+    // Close the last table
+    echo "</tbody>";
+    echo "</tfoot>";
+    echo "</table>";
+    
+    mysqli_free_result($result);
+    ?>
+                 </div>
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -124,11 +155,24 @@ $u_p = $_SESSION['user']['profile'];
       </div>
       <!-- /.container-fluid -->
     </section>
+    <?php
+} else {
+    echo "Error: " . mysqli_error($con);
+}
+
+// Close the mysqli connection
+mysqli_close($con);
+?>
+
+
+                
+                
+  
+ 
     <!-- /.content -->
   </div>
 
-    <!-- /.content -->
-  </div>
+ 
   <!-- /.content-wrapper -->
 
   <!-- /.content-wrapper -->
