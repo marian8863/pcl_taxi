@@ -66,6 +66,9 @@ if(isset($_GET['get_id'])){
     $dompdf->setOptions($options);
 
 // $url = 'http://localhost/pcl_taxi/admin/pdf_print.php?get_id=' . urlencode($pid);
+
+
+
 $url = 'http://booking.pariscablimousine.fr/admin/pdf_print.php?get_id=' . urlencode($pid);
 
 
