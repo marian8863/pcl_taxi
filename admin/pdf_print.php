@@ -84,20 +84,29 @@ if(isset($_GET['get_id'])){
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
       <!-- Font Awesome -->
 
+      <style>
+        .fontSize{
+            font-size:12px;
+        }
+        .fontSize_table{
+            font-size:11px;
+        }
+      </style>
+
   </head>
   <body>
    
   <div class="container" id="myBillingArea">
   <div class="row">
       <div class="col-sm-4"><img src="dist/img/logo_pdf.png" width="100px"></div>
-      <div class="col-sm-8 " style="text-align:right">
+      <div class="col-sm-8 fontSize" style="text-align:right">
           <p>Bon de mission : PCL100<?php echo $pid;?></p>      
       </div>
   </div>
   <div class="row">
       <div class="col-sm-6">
           <p class="h4">PARIS CAB LIMOUSINE</p>
-          <ul class="list-unstyled">
+          <ul class="list-unstyled fontSize">
           <li>44 avenue albert Sarraut</li>
           <li>95190 Goussainville</li>
           <li>SIRET : 840056022</li>
@@ -114,7 +123,7 @@ if(isset($_GET['get_id'])){
       <div class="col">
   
       </div>
-      <div class="col-5 text-center">
+      <div class="col-5 text-center fontSize">
       Justificatif de réservation préalable
       </div>
       <div class="col">
@@ -128,7 +137,7 @@ if(isset($_GET['get_id'])){
   </div>
   <div class="row">
   <div class="col">
-                <table class="table table-bordered">
+                <table class="table table-bordered fontSize_table">
                 <tbody>
                     <tr>
                     <th scope="row">Référence</th>
