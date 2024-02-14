@@ -54,7 +54,7 @@ $u_p = $_SESSION['user']['profile'];
 
 // Execute the SELECT query
 $query = "SELECT distinct passenger.`p_id`,passenger.`passager_principal`,DATE_FORMAT(passenger.`date_de_prise_en_charge`, '%d-%b,%Y') AS formatted_date ,passenger.`Time`,passenger.`Tarif`,type_mission.`type_m`,driver.`dname`,passenger.`Create_job_action` 
-FROM passenger ,type_mission,driver where passenger.`tm_id`=type_mission.`tm_id` and passenger.`d_id`=driver.`d_id` and  passenger.`Create_job_action`='completed'   ORDER BY passenger.`date_de_prise_en_charge`";
+FROM passenger ,type_mission,driver where passenger.`tm_id`=type_mission.`tm_id` and passenger.`d_id`=driver.`d_id` and  passenger.`Create_job_action`='completed'   ORDER BY passenger.`date_de_prise_en_charge` desc";
 $result = mysqli_query($con, $query);
 
 if ($result) {
