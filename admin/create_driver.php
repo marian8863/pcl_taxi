@@ -149,7 +149,7 @@ if(isset($_POST['add'])){
         $driver_desc=$_POST['driver_desc'];
         
   
-        $sql="INSERT INTO `driver` (`dname`,`dtp_num`,`driver_desc`) values('$dname','$dtp_num','$driver_desc')";
+        $sql='INSERT INTO `driver` (`dname`,`dtp_num`,`driver_desc`) values("'.$dname.'","'.$dtp_num.'","'.$driver_desc.'")';
         if(mysqli_query($con,$sql)){
             //$message ="<h5>New record created successfully</h5>";
           echo '<script>';

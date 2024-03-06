@@ -31,6 +31,7 @@ $u_p = $_SESSION['user']['profile'];
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item active">Jobs Detail
               <?php
+              $actual_link = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; 
                   // echo  $Sdate = new DateTime("now", new DateTimeZone('Asia/Colombo'));
                  // date_default_timezone_set('Asia/Colombo');
                   // $date = date('d-m-y h:i:s');
@@ -53,7 +54,7 @@ $u_p = $_SESSION['user']['profile'];
           </div>
                 <!-- /.col -->
           <div class="col-3">
-              <a href="create_booking" class="btn btn-primary btn-block"> + Add</a>
+              <a href="create_booking" class="btn btn-primary btn-block"> + Add</a><?php echo $actual_link;?>
           </div>
         </div>
       </div>
