@@ -14,6 +14,10 @@
   <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  
+<!-- Intl Tel Input -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css" />
+
 </head>
 <body class="hold-transition register-page">
 <div class="register-box">
@@ -43,6 +47,23 @@
             </div>
           </div>
         </div>
+        <!-- <div class="input-group mb-3">
+          <input type="tel" id="phone" class="form-control" name="phone" placeholder="Phone number with country code">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-phone"></span>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="input-group mb-3">
+          <input type="text" id="phone" class="form-control" name="phone" placeholder="Phone number with country code" >
+          <div class="input-group-append">
+            <div class="input-group-text">
+               <span class="fas fa-phone"></span>
+            </div>
+          </div>
+        </div>
         <div class="form-group mb-3">
           <select class="custom-select" name="user_type" id="user_type" >
             <option disabled selected >User type</option>
@@ -67,23 +88,23 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-8">
+          <!-- <div class="col-8">
             <div class="icheck-primary">
               <input type="checkbox" id="agreeTerms" name="terms" value="agree" >
               <label for="agreeTerms">
                I agree to the <a href="#">terms</a>
               </label>
             </div>
-          </div>
+          </div> -->
           <!-- /.col -->
-          <div class="col-4">
+          <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block" name="register_btn">Register</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
-      <div class="social-auth-links text-center">
+      <!-- <div class="social-auth-links text-center">
         <p>- OR -</p>
         <a href="#" class="btn btn-block btn-primary">
           <i class="fab fa-facebook mr-2"></i>
@@ -93,7 +114,7 @@
           <i class="fab fa-google-plus mr-2"></i>
           Sign up using Google+
         </a>
-      </div>
+      </div> -->
 
       <!-- <a href="login.html" class="text-center">I already have a membership</a> -->
     </div>
@@ -101,7 +122,16 @@
   </div><!-- /.card -->
 </div>
 <!-- /.register-box -->
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+<!-- <script>
+  const phoneInput = document.querySelector("#phone");
+  const iti = window.intlTelInput(phoneInput, {
+    initialCountry: "us",
+    nationalMode: false,
+    formatOnDisplay: true
+  });
+</script>  -->
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->

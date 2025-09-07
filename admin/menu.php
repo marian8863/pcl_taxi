@@ -6,7 +6,9 @@
 // $u_ta = $_SESSION['user_table'];
 // $u_t = $_SESSION['user_type'];
 // $d_c = $_SESSION['department_code'];
+
 $u_id = $_SESSION['user']['id'];
+echo $u_id;
 $u_n = $_SESSION['user']['username'];
 $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
@@ -201,7 +203,7 @@ $u_p = $_SESSION['user']['profile'];
             <!--user count end-->
             <!--adminin  count start-->  
             <?php
-            $sql = "SELECT COUNT(id) AS users_adminin_totlal FROM `users` Where user_type='adminin'";
+            $sql = "SELECT COUNT(id) AS users_adminin_totlal FROM `users` Where user_type='admin'";
             $result = mysqli_query($con, $sql);
             if (mysqli_num_rows($result) > 0) {
 
@@ -228,10 +230,55 @@ $u_p = $_SESSION['user']['profile'];
                 echo "0 results";
             }
             ?>
+
+                        <!--ADM   count start-->  
+            <?php
+            $sql = "SELECT COUNT(id) AS users_ADM_totlal FROM `users` Where user_type='ADM'";
+            $result = mysqli_query($con, $sql);
+            if (mysqli_num_rows($result) > 0) {
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $u_M_t = $row["users_ADM_totlal"];
+
+                }
+            } else {
+                echo "0 results";
+            }
+            ?>
+
+                                    <!--driver   count start-->  
+            <?php
+            $sql = "SELECT COUNT(id) AS users_Driver_totlal FROM `users` Where user_type='driver'";
+            $result = mysqli_query($con, $sql);
+            if (mysqli_num_rows($result) > 0) {
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $u_D_t = $row["users_Driver_totlal"];
+
+                }
+            } else {
+                echo "0 results";
+            }
+            ?>
+
+                                               <!--Enteries   count start-->  
+            <?php
+            $sql = "SELECT COUNT(id) AS users_Enteries_totlal FROM `users` Where user_type='enteries'";
+            $result = mysqli_query($con, $sql);
+            if (mysqli_num_rows($result) > 0) {
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $u_E_t = $row["users_Enteries_totlal"];
+
+                }
+            } else {
+                echo "0 results";
+            }
+            ?>
             <!--user   count end--> 
 
        <!-- new user -->
-      <?php if ($_SESSION['user']['user_type'] == 'adminin') {?>
+      <?php if ($_SESSION['user']['user_type'] == 'admin') {?>
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="fas fa-users"></i>
@@ -241,7 +288,7 @@ $u_p = $_SESSION['user']['profile'];
           <span class="dropdown-item dropdown-header">You have <?php echo $ut; ?> assest </span>
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i> adminin
+            <i class="fas fa-user mr-2"></i> Admin
             <span class="float-right text-muted text-sm"><?php echo $u_a_t ?></span>
           </a>
           <div class="dropdown-divider"></div>
@@ -249,8 +296,26 @@ $u_p = $_SESSION['user']['profile'];
             <i class="fas fa-users mr-2"></i> Users
             <span class="float-right text-muted text-sm"><?php echo $u_u_t ?></span>
           </a>
+
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> ADM
+            <span class="float-right text-muted text-sm"><?php echo $u_M_t ?></span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> Drivers
+            <span class="float-right text-muted text-sm"><?php echo $u_D_t ?></span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> Enteries
+            <span class="float-right text-muted text-sm"><?php echo $u_E_t ?></span>
+          </a>
           <div class="dropdown-divider"></div>
           <a href="register" class="dropdown-item dropdown-footer">Create another account</a>
+          <div class="dropdown-divider"></div>
+          <a href="view_users" class="dropdown-item dropdown-footer">View Users</a>
         </div>
       </li>
       <?php }?>
@@ -298,663 +363,74 @@ $u_p = $_SESSION['user']['profile'];
       </div>
 
       <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <?php if ($_SESSION['user']['user_type'] == 'ADM') {?>
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="http://booking.pariscablimousine.fr/admin/" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v1</p>
-                </a>
-              </li>
-              <!-- <li class="nav-item">
-                <a href="./index2.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v2</p>
-                </a>
-              </li> -->
-              <!-- <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v3</p>
-                </a>
-              </li> -->
-            </ul>
-          </li>
-          <?php }?>
-          
-
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Booking Schedule 
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-
-            <ul class="nav nav-treeview myDIV" >
-              <li class="nav-item">
-                <a href="view_drivers" class="nav-link clk ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                  View Drivers
-                  </p>
-                </a>
-              </li>
-             
-              <li class="nav-item">
-                <a href="view_passenger" class="nav-link clk">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    View Passenger
-                  </p>
-                </a>
-              </li>
+      <?php
 
 
-              <li class="nav-item">
-                <a href="view_type_mission" class="nav-link clk">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    Type Mission
-                  </p>
-                </a>
-              </li>
 
-              <li class="nav-item">
-                <a href="view_vehicule" class="nav-link clk">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    View vehicule
-                  </p>
-                </a>
-              </li>
 
-              <!-- <li class="nav-item">
-                <a href="view_company" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    View Company
-                  </p>
-                </a>
-              </li> -->
-              <li class="nav-item">
-                <a href="view_tarif_type" class="nav-link clk">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    View Tarif Type
-                  </p>
-                </a>
-              </li>
-              
-              <?php if ($_SESSION['user']['user_type'] == 'admin') {?>
-              <li class="nav-item">
-                <a href="feb" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    FEB
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="month_summary" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>FEB Summary</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v3</p>
-                </a>
-              </li>
-              <?php }?>
-            </ul>
+// Get all submenus the user has access to
+$sqlAllowedSubmenus = "SELECT menu_id FROM user_menu_access WHERE user_id = ?";
+$stmtAllowed = $con->prepare($sqlAllowedSubmenus);
+$stmtAllowed->bind_param("i", $u_id);
+$stmtAllowed->execute();
+$resultAllowed = $stmtAllowed->get_result();
 
-          </li>
+$allowedMenuIds = [];
+while ($row = $resultAllowed->fetch_assoc()) {
+    $allowedMenuIds[] = $row['menu_id'];
+}
 
-          <?php if ($_SESSION['user']['user_type'] == 'ADM') {?>
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Job Verification
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="view_passenger_action_completed" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    View Completed Jobs 
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="view_passenger_action_cancel" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    View Cancel Jobs  
-                  </p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <?php } ?>
+// Fetch all main menus
+$sqlMain = "SELECT * FROM menus WHERE parent_id = 'NULL' AND is_active = 1 ORDER BY id";
+$resultMain = $con->query($sqlMain);
 
-          <?php if ($_SESSION['user']['user_type'] == 'admin') {?>
+echo '<nav class="mt-2">';
+echo '<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">';
 
-          <li class="nav-item">
-            <a href="widgets" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Widgets
-                <span class="right badge badge-danger">New</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Layout Options
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right">6</span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/layout/top-nav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Top Navigation</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Top Navigation + Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/boxed.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Boxed</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-topnav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Navbar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-footer.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Footer</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Collapsed Sidebar</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Charts
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/charts/chartjs.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>ChartJS</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/flot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Flot</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inline</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tree"></i>
-              <p>
-                UI Elements
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/UI/general.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>General</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/icons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Icons</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Buttons</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/sliders.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Sliders</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/modals.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Modals & Alerts</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/navbar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Navbar & Tabs</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/timeline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Timeline</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/ribbons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ribbons</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
-              <p>
-                Forms
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/forms/general.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>General Elements</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/forms/advanced.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Advanced Elements</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/forms/editors.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Editors</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/forms/validation.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Validation</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                Tables
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/tables/simple.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Simple Tables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/data.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>DataTables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/jsgrid.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>jsGrid</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-header">EXAMPLES</li>
-          <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"></i>
-              <p>
-                Calendar
-                <span class="badge badge-info right">2</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
-              <p>
-                Gallery
-              </p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-envelope"></i>
-              <p>
-                Mailbox
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inbox</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/compose.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Compose</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Read</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>
-                Pages
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/examples/invoice.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Invoice</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/profile.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Profile</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/e-commerce.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>E-commerce</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/projects.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Projects</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/project-add.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Project Add</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/project-edit.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Project Edit</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/project-detail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Project Detail</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/contacts.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Contacts</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-plus-square"></i>
-              <p>
-                Extras
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/examples/login.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Login</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/register.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Register</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/forgot-password.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Forgot Password</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/recover-password.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Recover Password</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/lockscreen.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Lockscreen</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/legacy-user-menu.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Legacy User Menu</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/language-menu.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Language Menu</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/404.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Error 404</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/500.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Error 500</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/pace.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pace</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/blank.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Blank Page</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="starter.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Starter Page</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-header">MISCELLANEOUS</li>
-          <li class="nav-item">
-            <a href="https://admininlte.io/docs/3.0/" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Documentation</p>
-            </a>
-          </li>
-          <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Level 1</p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-circle"></i>
-              <p>
-                Level 1
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Level 2</p>
-                </a>
-              </li>
-              <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    Level 2
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Level 2</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Level 1</p>
-            </a>
-          </li>
-          <li class="nav-header">LABELS</li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-circle text-danger"></i>
-              <p class="text">Important</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-circle text-warning"></i>
-              <p>Warning</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-circle text-info"></i>
-              <p>Informational</p>
-            </a>
-          </li>
-          <?php }?>
-        </ul>
-      </nav>
+while ($main = $resultMain->fetch_assoc()) {
+    $main_id = $main['id'];
+
+    // Fetch submenus under this main menu that the user is allowed to see
+    $sqlSub = "SELECT * FROM menus WHERE parent_id = ? AND is_active = 1 ORDER BY id";
+    $stmtSub = $con->prepare($sqlSub);
+    $stmtSub->bind_param("i", $main_id);
+    $stmtSub->execute();
+    $subMenus = $stmtSub->get_result();
+
+    $visibleSubmenus = [];
+
+    while ($sub = $subMenus->fetch_assoc()) {
+        if (in_array($sub['id'], $allowedMenuIds)) {
+            $visibleSubmenus[] = $sub;
+        }
+    }
+
+    // Only show main menu if there are visible submenus
+    if (!empty($visibleSubmenus)) {
+        echo '<li class="nav-item has-treeview menu-open">';
+        echo '<a href="#" class="nav-link active">';
+        echo '<i class="nav-icon ' . htmlspecialchars($main['icon_class']) . '"></i>';
+        echo '<p>' . htmlspecialchars($main['menu_name']) . '<i class="right fas fa-angle-left"></i></p>';
+        echo '</a>';
+        echo '<ul class="nav nav-treeview">';
+        foreach ($visibleSubmenus as $sub) {
+            echo '<li class="nav-item">';
+            echo '<a href="' . htmlspecialchars($sub['url']) . '" class="nav-link">';
+            echo '<i class="' . htmlspecialchars($sub['icon_class']) . ' nav-icon"></i>';
+            echo '<p>' . htmlspecialchars($sub['menu_name']) . '</p>';
+            echo '</a>';
+            echo '</li>';
+        }
+        echo '</ul>';
+        echo '</li>';
+    }
+}
+
+echo '</ul>';
+echo '</nav>';
+?>
+
+
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->

@@ -14,7 +14,7 @@ session_start();
 // if (mysqli_connect_errno()){
 //   }else{
 //   }
-// $con = mysqli_connect('localhost', 'root', '', 'myadmin1');
+//  $con = mysqli_connect('localhost', 'root', '', 'pcl_admin');
 //   $con = mysqli_connect('localhost','ceadhzdi_cedar', 'JKjayanth96@', 'ceadhzdi_cedar');
 
   $con = mysqli_connect('localhost','c1987705c', '7u33gvqUWtktw25', 'c1987705c_admin');
@@ -48,6 +48,7 @@ session_start();
 		// receive all input values from the form
 		$username    =  e($_POST['username']);
 		$email       =  e($_POST['email']);
+		$phone = e($_POST['phone']);
 		$password_1  =  e($_POST['password_1']);
 		$password_2  =  e($_POST['password_2']);
 
@@ -58,6 +59,20 @@ session_start();
 		if (empty($email)) { 
 			array_push($errors, "Email is required"); 
 		}
+	if (empty($phone)) {
+    array_push($errors, "Phone number is required");
+} else {
+    // Remove spaces, dashes, and brackets for validation & storage
+    $clean_phone = preg_replace('/[\s\-\(\)]/', '', $phone);
+
+    if (!preg_match('/^\+?[0-9]{7,15}$/', $clean_phone)) {
+        array_push($errors, "Invalid phone number format");
+    } else {
+        // Use $clean_phone when saving to DB
+        $phone = $clean_phone;
+    }
+}
+
 		if (empty($password_1)) { 
 			array_push($errors, "Password is required"); 
 		}
@@ -71,14 +86,14 @@ session_start();
 
 			if (isset($_POST['user_type'])) {
 				$user_type = e($_POST['user_type']);
-				$query = "INSERT INTO users (username, email, user_type, password) 
-						  VALUES('$username', '$email', '$user_type', '$password')";
+				$query = "INSERT INTO users (username, email, phone, user_type, password) 
+						VALUES('$username', '$email', '$phone', '$user_type', '$password')";
 				mysqli_query($con, $query);
 				$_SESSION['success']  = "New user successfully created!!";
 				header('location: index');
 			}else{
-				$query = "INSERT INTO users (username, email, user_type, password) 
-						  VALUES('$username', '$email', 'user', '$password')";
+				$query = "INSERT INTO users (username, email,phone, user_type, password) 
+						  VALUES('$username', '$email','$phone', 'user', '$password')";
 				mysqli_query($con, $query);
 
 				// get id of the created user
@@ -129,7 +144,7 @@ session_start();
 			if (mysqli_num_rows($results) == 1) { // user found
 				// check if user is admin or user
 				$logged_in_user = mysqli_fetch_assoc($results);
-				if ($logged_in_user['user_type'] == 'admin' || $logged_in_user['user_type'] == 'user' || $logged_in_user['user_type'] == 'ADM') {
+				if ($logged_in_user['user_type'] == 'admin' || $logged_in_user['user_type'] == 'enteries' || $logged_in_user['user_type'] == 'ADM'  || $logged_in_user['user_type'] == 'driver') {
 
 					$_SESSION['user'] = $logged_in_user;
 					$_SESSION['success']  = "You are now logged in";
@@ -150,14 +165,22 @@ session_start();
 		}
 	}
 
+
+
 	function isAdmin()
-	{
-		if (isset($_SESSION['user']) && $_SESSION['user']['user_type'] == 'admin' || $_SESSION['user']['user_type'] == 'user'  || $_SESSION['user']['user_type'] == 'ADM' ) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+{
+    if (isset($_SESSION['user']) && (
+        $_SESSION['user']['user_type'] == 'admin' ||
+        $_SESSION['user']['user_type'] == 'enteries' ||
+        $_SESSION['user']['user_type'] == 'ADM' ||
+        $_SESSION['user']['user_type'] == 'driver'
+    )) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 	// escape string
 	function e($val){

@@ -9,7 +9,7 @@ $u_n = $_SESSION['user']['username'];
 $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
 
-$required_menu_name = 'view_vehicule'; // ✅ MUST be defined before include
+$required_menu_name = 'passenger_locations'; // ✅ MUST be defined before include
 // echo "Checking menu: " . $required_menu_name;
  include 'auth_check.php'; 
 
@@ -19,7 +19,7 @@ $required_menu_name = 'view_vehicule'; // ✅ MUST be defined before include
 <?php
 
 if(isset($_GET['get_id'])){
-    $vid=$_GET['get_id'];
+    $plid=$_GET['get_id'];
 }
 ?>
 
@@ -34,12 +34,12 @@ if(isset($_GET['get_id'])){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Vehicule Detail</h1>
+            <h1 class="m-0 text-dark">Passenger Locations</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Vehicule Detail
+              <li class="breadcrumb-item active">Passenger Locations
               <?php
                   // echo  $Sdate = new DateTime("now", new DateTimeZone('Asia/Colombo'));
                   // date_default_timezone_set('UTC');
@@ -76,7 +76,7 @@ if(isset($_GET['get_id'])){
                 </div>
                 <!-- /.col -->
                 <div class="col-3">
-                    <a href="create_vehicule" class="btn btn-primary btn-block"> + Add</a>
+                    <a href="create_passenger_locations" class="btn btn-primary btn-block"> + Add</a>
 
                 </div>
                 </div>
@@ -86,40 +86,78 @@ if(isset($_GET['get_id'])){
                   <thead>
                   <tr>
                     <!-- <th data-visible="false">Id</th> -->
-                    <th>vehicule ID</th>
-                    <th>vehicule</th>
+                    <th>Passenger Locations ID</th>
+                    <th>Location</th>
                     <th>Action</th>
                     <!-- <th data-visible="false">Create Date</th> -->
                   </tr>
                   </thead>
-                  <?php
+                   <?php
                     if(isset($_GET['delete_id']))
                     {                
-                        $v_id = $_GET['delete_id'];
+                        $ploc_id = $_GET['delete_id'];
+                        // Start a transaction
+                        $con->begin_transaction();
 
-                        $sql = "DELETE from vehicule where v_id = $v_id";
+                        // Define an array of table names
+                        $tables = ["flight_locations"];
 
-                        if(mysqli_query($con,$sql))
-                        { }
-                        else
-                        {}
-                    }
+                        $success = true;
+
+                        // Delete records from each table
+                        foreach ($tables as $table) {
+                            $sql = "DELETE FROM $table WHERE id = $ploc_id";
+                            if ($con->query($sql) !== TRUE) {
+                                $success = false;
+                                break;
+                            }
+                        }
+
+                        if ($success) {
+                            // All deletes were successful
+                            $con->commit(); // Commit the transaction
+                            echo '<script>';
+                            echo '
+                            Swal.fire({
+                               position: "top-end",
+                           
+                               icon: "success",
+                               title: "Your Data Deleted!",
+                               showConfirmButton: false,
+                              
+                               timer: 1500
+                             }).then(function() {
+                               // Redirect the user
+                               window.location.href = "passenger_locations";
+                           
+                               });
+                            ';
+                            echo '</script>';
+                        } else {
+                            // At least one delete operation failed, so we need to roll back the transaction
+                            $con->rollback();
+                            echo "Error deleting records from one or more tables: " . $con->error;
+                        }
+
+                      
+                      }
+
                     ?>
                   <tbody>
                
                     <?php  
-                    $sql="SELECT `v_id`,`Vehicule_num` FROM vehicule";         
+                    $sql="SELECT `id`,`name` FROM flight_locations";         
                     $res=$con->query($sql);
                     while($row=$res->fetch_assoc()){    
                             
                     ?>
                     <tr>
                     <!-- //<td>< $row['d_id']?></td> -->
-                        <td><?= $row['v_id']?></td>
-                        <td><?= $row['Vehicule_num']?></td>
+                        <td><?= $row['id']?></td>
+                        <td><?= $row['name']?></td>
                         <td>
-                            <a href="create_vehicule.php?get_id=<?= $row["v_id"]?>" class="btn btn-info"><i class="fas fa-edit"></i></a>
-                            <button  data-href="?delete_id=<?=$row["v_id"]?>" data-toggle="modal" data-target="#confirm-delete"  class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <a href="create_passenger_locations.php?get_id=<?= $row["id"]?>" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                            <button  data-href="?delete_id=<?=$row["id"]?>" data-toggle="modal" data-target="#confirm-delete"  class="btn btn-danger"><i class="fas fa-trash"></i></button>
 
                         </td>
                     </tr>

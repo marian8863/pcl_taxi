@@ -9,6 +9,10 @@ $u_n = $_SESSION['user']['username'];
 $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
 
+
+$required_menu_name = 'view_drivers'; // ✅ MUST be defined before include
+// echo "Checking menu: " . $required_menu_name;
+ include 'auth_check.php'; 
 ?>
 <!--END DON'T CHANGE THE ORDER-->
 
@@ -107,12 +111,18 @@ if(isset($_GET['get_id'])){
                     $sql="SELECT `d_id`,`dname`,`dtp_num` FROM driver";         
                     $res=$con->query($sql);
                     while($row=$res->fetch_assoc()){    
-                            
+                        $dtp_num = $row['dtp_num'];     
                     ?>
                     <tr>
                     <!-- //<td>< $row['d_id']?></td> -->
                         <td><?= $row['dname']?></td>
-                        <td><?= $row['dtp_num']?></td>
+                        <td>
+                          <!-- <= $row['dtp_num']?> -->
+                          
+                      <a href="tel:<?php echo preg_replace('/\s+/', '', $dtp_num); ?>">
+    <?php echo htmlspecialchars($dtp_num); ?>
+</a>
+                      </td>
                         <td>
                             <a href="create_driver.php?get_id=<?= $row["d_id"]?>" class="btn btn-info"><i class="fas fa-edit"></i></a>
                             <button  data-href="?delete_id=<?=$row["d_id"]?>" data-toggle="modal" data-target="#confirm-delete"  class="btn btn-danger"><i class="fas fa-trash"></i></button>

@@ -5,19 +5,25 @@ $title = "Home | SLGTI";
 include_once("head.php");
 include_once("menu.php");
 
+$u_id = $_SESSION['user']['id'];
 $u_n = $_SESSION['user']['username'];
 $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
 
 
-$required_menu_name = 'view_passenger'; // ✅ MUST be defined before include
+$required_menu_name = 'driver_status'; // ✅ MUST be defined before include
 // echo "Checking menu: " . $required_menu_name;
  include 'auth_check.php'; 
 
 ?>
 <!--END DON'T CHANGE THE ORDER-->
 
+<?php
 
+if(isset($_GET['get_id'])){
+    $did=$_GET['get_id'];
+}
+?>
 
 
 <!--BLOCK#2 START YOUR CODE HERE -->
@@ -29,13 +35,14 @@ $required_menu_name = 'view_passenger'; // ✅ MUST be defined before include
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Jobs Detail</h1>
+            <h1 class="m-0 text-dark">Driver Status</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Jobs Detail
+              <li class="breadcrumb-item active">Driver Status
               <?php
+              $actual_link = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; 
                   // echo  $Sdate = new DateTime("now", new DateTimeZone('Asia/Colombo'));
                  // date_default_timezone_set('Asia/Colombo');
                   // $date = date('d-m-y h:i:s');
@@ -50,7 +57,7 @@ $required_menu_name = 'view_passenger'; // ✅ MUST be defined before include
     <!-- /.content-header -->
 
   <!-- Main content -->
-     <?php if ($_SESSION['user']['user_type'] == 'admin' || $_SESSION['user']['user_type'] == 'ADM') {?>        
+                  
     <section class="content mb-2">
       <div class="container-fluid">
         <div class="row">
@@ -58,12 +65,11 @@ $required_menu_name = 'view_passenger'; // ✅ MUST be defined before include
           </div>
                 <!-- /.col -->
           <div class="col-3">
-              <a href="create_booking" class="btn btn-primary btn-block"> + Add</a>
+              <!-- <a href="create_booking" class="btn btn-primary btn-block"> + Add</a> -->
           </div>
         </div>
       </div>
     </section>
-    <?php }?>
 
 
                 <?php
@@ -105,77 +111,27 @@ if (isset($_POST['update_status'])) {
 
 
 
-                // Get all drivers for the dropdown
-$userss = [];
-$users_result = mysqli_query($con, "SELECT id, username FROM users where user_type='driver' ORDER BY username");
-if ($users_result) {
-    while ($drow = mysqli_fetch_assoc($users_result)) {
-        $userss[] = $drow; // each: ['d_id' => ..., 'dname' => ...]
-    }
-}
-
-
-// Handle driver update
-if (isset($_POST['update_driver'])) {
-    $new_driver_id = (int)($_POST['user_id'] ?? 0);
-    $passenger_id  = (int)($_POST['p_id'] ?? 0);
-
-    if ($new_driver_id > 0 && $passenger_id > 0) {
-        $stmt = $con->prepare("UPDATE passenger SET user_id = ? WHERE p_id = ?");
-        $stmt->bind_param("ii", $new_driver_id, $passenger_id);
-        if ($stmt->execute()) {
-            echo '<script>
-                Swal.fire({
-                    icon: "success",
-                    title: "Driver updated!",
-                    timer: 1200,
-                    showConfirmButton: false
-                }).then(function(){
-                    window.location.href = "view_passenger";
-                });
-            </script>';
-        } else {
-            echo "Error updating driver: " . $con->error;
-        }
-        $stmt->close();
-    }
-}
 
 // Assuming you've already established a mysqli connection
-
-
-// Get current logged in user
-$user_type = $_SESSION['user']['user_type'] ?? '';
-$logged_user_id = $_SESSION['user']['id'] ?? 0;
-
-$extra_condition = "";
-
-// Restrict query based on role
-if ($user_type === 'driver') {
-    // Driver only sees his own rides
-    $extra_condition = " AND p.user_id = " . (int)$logged_user_id;
-} elseif ($user_type === 'enteries') {
-    // Normal users should not see anything
-    $extra_condition = " AND 1=0 "; // always false
-} 
-// admin and ADM → see everything, so no condition needed
-
+   $u_id = $_SESSION['user']['id'] ?? 0;
 $query = "
-SELECT
+SELECT 
     p.p_id,
     p.passager_principal,
     DATE_FORMAT(p.date_de_prise_en_charge, '%d-%b,%Y') AS formatted_date,
     p.Time,
-    tm.type_m,
-    u.username,
-    p.user_id AS current_user_id
+    tm.type_m
 FROM passenger p
+JOIN users u ON p.user_id = u.id
 JOIN type_mission tm ON p.tm_id = tm.tm_id
-LEFT JOIN users u ON p.user_id = u.id
-WHERE p.Create_job_action = 'created' $extra_condition
+WHERE u.id =? AND p.Create_job_action='created'  
 ORDER BY p.date_de_prise_en_charge, p.Time
 ";
-$result = mysqli_query($con, $query);
+$stmt = $con->prepare($query);
+$stmt->bind_param("i", $u_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
 
 
 
@@ -226,72 +182,14 @@ if ($result) {
                     <th>Time</th>
                     <th>Type de Mission</th>
                     <th>Passager Principal</th>
-                  <?php if (in_array($user_type, ['admin', 'ADM'])): ?>
-                      <th>Driver</th>
-                      <th>Admin Action</th>
-                      <th>Driver Action</th>
-                  <?php elseif ($user_type === 'driver'): ?>
-                      <th>Driver Action</th>
-                  <?php endif; ?>
-                    
+                    <th>Action</th>
+                  
                     <!-- <th data-visible="false">Create Date</th> -->
                   </tr>
                   </thead>
-                  <?php
-                    if(isset($_GET['delete_id']))
-                    {                
-                        $p_id = $_GET['delete_id'];
-                        // Start a transaction
-                        $con->begin_transaction();
 
-                        // Define an array of table names
-                        $tables = ["passenger", "option_desc", "passenger_description", "type_de_mission_desc"];
-
-                        $success = true;
-
-                        // Delete records from each table
-                        foreach ($tables as $table) {
-                            $sql = "DELETE FROM $table WHERE p_id = $p_id";
-                            if ($con->query($sql) !== TRUE) {
-                                $success = false;
-                                break;
-                            }
-                        }
-
-                        if ($success) {
-                            // All deletes were successful
-                            $con->commit(); // Commit the transaction
-                            echo '<script>';
-                            echo '
-                            Swal.fire({
-                               position: "top-end",
-                           
-                               icon: "success",
-                               title: "Your Data Deleted!",
-                               showConfirmButton: false,
-                              
-                               timer: 1500
-                             }).then(function() {
-                               // Redirect the user
-                               window.location.href = "view_passenger";
-                           
-                               });
-                            ';
-                            echo '</script>';
-                        } else {
-                            // At least one delete operation failed, so we need to roll back the transaction
-                            $con->rollback();
-                            echo "Error deleting records from one or more tables: " . $con->error;
-                        }
-
-                      
-                      }
-
-                    ?>
                   <tbody>
-        <?php
-        }
-        ?>
+        <?php } ?>
         
                     <tr>
                         <td><a href="create_passenger_action.php?get_id=<?= $row["p_id"]?>"><?= "PCL1000".$row['p_id']?></a></td>
@@ -299,47 +197,11 @@ if ($result) {
                         <td><?= $row['Time']?></td>
                         <td><?= $row['type_m']?></td>
                         <td><?= $row['passager_principal']?></td>
-                        <?php if (in_array($user_type, ['admin', 'ADM'])): ?>
-                        <td style="min-width:280px">
-                          
-                              <!-- Admin & ADM can assign/change driver -->
-                              <form method="post" style="display:flex; align-items:center; gap:6px; margin:0;">
-                                <input type="hidden" name="p_id" value="<?= (int)$row['p_id'] ?>">
-                                <select name="user_id" class="form-control form-control-sm" required>
-                                  <option value="" disabled <?= empty($row['current_user_id']) ? 'selected' : '' ?>>— choose —</option>
-                                  <?php foreach ($userss as $drv): ?>
-                                    <option value="<?= (int)$drv['id'] ?>"
-                                      <?= ((int)$drv['id'] === (int)$row['current_user_id']) ? 'selected' : '' ?>>
-                                      <?= htmlspecialchars($drv['username']) ?>
-                                    </option>
-                                  <?php endforeach; ?>
-                                </select>
-                                <button type="submit" name="update_driver" class="btn btn-sm btn-primary">Save</button>
-                              </form>
-                        </td>
-                          <?php endif; ?>
+            
 
-                          <?php if (in_array($user_type, ['admin', 'ADM'])): ?>
-                          <td>
-                      
-                          <!-- Admin & ADM: Full access -->
-                          <a href="create_booking.php?get_id=<?= $row["p_id"]?>" class="btn btn-info">
-                            <i class="fas fa-edit"></i>
-                          </a>
-                          <a href="print_invoice1.php?get_id=<?= $row["p_id"]?>" target="_blank" class="btn btn-success">
-                            <i class="fas fa-download"></i>
-                          </a> 
-                          <button class="btn btn-danger" 
-                                  data-href="?delete_id=<?= $row["p_id"]?>" 
-                                  data-toggle="modal" 
-                                  data-target="#confirm-delete-passenger">
-                            <i class="fas fa-trash"></i>
-                          </button>         
-                    </td>
-                    <?php endif; ?>
+              
 
-
-                    <td>
+<td>
   <?php
   // fetch status history for this ride
   $history = [];
@@ -404,6 +266,7 @@ if ($result) {
     </ul>
   <?php endif; ?>
 </td>
+
 
 
                     </tr>

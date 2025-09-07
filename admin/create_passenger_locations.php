@@ -15,14 +15,12 @@ $u_p = $_SESSION['user']['profile'];
 <?php
 
 if(isset($_GET['get_id'])){
-    $uid=$_GET['get_id'];
-    $sql="SELECT username,phone,user_desc from users where id='$uid'";
+    $plid=$_GET['get_id'];
+    $sql="SELECT `name` from flight_locations where id='$plid'";
     $result = mysqli_query($con,$sql);
     if(mysqli_num_rows($result)==1) {       
         $row=mysqli_fetch_assoc($result);
-        $dn=$row['username'];
-        $dtp=$row['phone'];
-        $user_desc=$row['user_desc'];
+        $pln=$row['name'];
     }
 }
 ?>
@@ -37,17 +35,17 @@ if(isset($_GET['get_id'])){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Drivers Detail</h1>
+            <h1 class="m-0 text-dark">Passenger Locations</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">February
+              <li class="breadcrumb-item active">Passenger Locations
               <?php
                   // echo  $Sdate = new DateTime("now", new DateTimeZone('Asia/Colombo'));
-                  date_default_timezone_set('Asia/Colombo');
-                  $date = date('d-m-y h:i:s');
-                  echo $date;
+                //   date_default_timezone_set('Asia/Colombo');
+                //   $date = date('d-m-y h:i:s');
+                //   echo $date;
               ?>
               </li>
             </ol>
@@ -65,11 +63,11 @@ if(isset($_GET['get_id'])){
                 <?php
                 if(isset($_GET['get_id'])){
                 ?>
-                    <h3 class="card-title">Edit Drivers</h3>
+                    <h3 class="card-title">Edit Passenger Locations</h3>
                 <?php
                 }else{
                 ?>
-                    <h3 class="card-title">Create Drivers</h3>
+                    <h3 class="card-title">Create Passenger Locations</h3>
                 <?php
                 }
                 ?>
@@ -81,39 +79,10 @@ if(isset($_GET['get_id'])){
                     <div class="col-sm-6">
                       <!-- text input -->
                       <div class="form-group">
-                        <label>Chauffeur</label>
-                        <input type="text" class="form-control" name="dname" value="<?php if(isset($_GET['get_id'])){ echo $dn;}?>" placeholder="Enter ...">
+                        <label>Passenger Locations </label>
+                        <input type="text" class="form-control" name="name" value="<?php if(isset($_GET['get_id'])){ echo $pln;}?>" placeholder="Enter ...">
                       </div>
                     </div>
-                    <div class="col-sm-6">
-                      <!-- text input -->
-                      <div class="form-group">
-                        <label>Chauffeur Contact Number</label>
-                        <!-- <input type="text" class="form-control" name="dtp_num" value="<php if(isset($_GET['get_id'])){ echo $dtp;}?>" placeholder="Enter ..."> -->
-<input 
-  type="tel" 
-  class="form-control" 
-  name="dtp_num" 
-  id="dtp_num" 
-  placeholder="+94 71 234 5678" 
-  value="<?php if(isset($_GET['get_id'])){ echo $dtp;}?>" 
-  required>
-
-
-
-                      </div>
-                    </div>
-
-                    <div class="col-sm-12">
-                      <!-- textarea -->
-                      <div class="form-group">
-                        <label>Driver Desc</label>
-                        <textarea class="form-control" rows="3" placeholder="Enter ..." name="user_desc" required><?php if(isset($_GET['get_id'])){ echo $driver_desc;}else{echo "
-                          Le règlement s'effectuera dans un délai de 10 jours suivant la réception de la facture. Les missions effectuées pendant le mois doivent être facturées à la fin du mois en cours. La référence de bon de mission est obligatoire. La facture doit être envoyée à cette adresse mail : pclfacture@gmail.com 
-                          ";}?></textarea>
-                      </div>
-                    </div>
-
                   </div>
                   <div class="row">
                     <div class="col-sm-3">
@@ -122,11 +91,11 @@ if(isset($_GET['get_id'])){
                       <?php
                         if(isset($_GET['get_id'])){
                         ?>
-                        <input type="submit" class="btn btn-danger btn-block" value="- Edit Driver" name="edit"> 
+                        <input type="submit" class="btn btn-danger btn-block" value="- Edit Passenger Locations" name="edit"> 
                         <?php
                         }else{
                         ?>
-                        <input type="submit" class="btn btn-primary btn-block" value="+ Add Driver" name="add"> 
+                        <input type="submit" class="btn btn-primary btn-block" value="+ Add Passenger Locations" name="add"> 
                         <?php
                         }
                         ?>
@@ -155,14 +124,10 @@ if(isset($_GET['get_id'])){
 <?php
 if(isset($_POST['add'])){
 
-    if(!empty($_POST['username'])&& 
-    !empty($_POST['phone'])){
-        $username=$_POST['username'];
-        $phone=$_POST['phone'];
-        $user_desc=$_POST['user_desc'];
-        
+    if(!empty($_POST['name'])){
+        $name=$_POST['name'];
   
-        $sql='INSERT INTO `users` (`username`,`dtp_num`,`driver_desc`) values("'.$dname.'","'.$dtp_num.'","'.$driver_desc.'")';
+        $sql="INSERT INTO `flight_locations` (`name`) values('$name')";
         if(mysqli_query($con,$sql)){
             //$message ="<h5>New record created successfully</h5>";
           echo '<script>';
@@ -171,13 +136,13 @@ if(isset($_POST['add'])){
              position: "top-end",
          
              icon: "success",
-             title: "Your Driver has been saved",
+             title: "Your Passenger Locations has been saved",
              showConfirmButton: false,
             
              timer: 1500
            }).then(function() {
              // Redirect the user
-             window.location.href = "view_drivers";
+             window.location.href = "passenger_locations";
          
              });
           ';
@@ -193,20 +158,13 @@ if(isset($_POST['add'])){
 
 <?php
 if(isset($_POST['edit'])){
-    if(!empty($_POST['dname'])&& 
-    !empty($_POST['dtp_num'])){
-    $d_id=$_GET['get_id'];
-    $dname=$_POST['dname'];
-    $dtp_num=$_POST['dtp_num'];
-    $driver_desc=$_POST['driver_desc'];
-    
+    if(!empty($_POST['name'])){
+        $name=$_POST['name'];
 
-  $sql='UPDATE  `driver`
-  set `dname` ="'.$dname.'",
-  `dtp_num`="'.$dtp_num.'",
-  `driver_desc`="'.$driver_desc.'"
+  $sql='UPDATE  `flight_locations`
+  set `name` ="'.$name.'"
 
-  where `d_id`="'.$did.'"';
+  where `id`="'.$plid.'"';
   if(mysqli_query($con,$sql)){
    
     // $message ="<h4 class='text-success' >Update successfully</h4>";
@@ -216,13 +174,13 @@ if(isset($_POST['edit'])){
        position: "top-end",
    
        icon: "success",
-       title: "Your Driver has been updated",
+       title: "Your Passenger Locations has been updated",
        showConfirmButton: false,
       
        timer: 1500
      }).then(function() {
        // Redirect the user
-       window.location.href = "view_drivers";
+       window.location.href = "passenger_locations";
    
        });
     ';

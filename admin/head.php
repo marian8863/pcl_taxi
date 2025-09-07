@@ -13,7 +13,9 @@ include '../config.php';
 if (!isAdmin()) {
     $_SESSION['msg'] = "You must log in first";
     header('location: ../login');
+    
 }
+
 else{
   // echo "lusu";
 }
@@ -64,6 +66,11 @@ else{
 
   <link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.css">
   <script src="plugins/sweetalert2/sweetalert2.js"></script>
+
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">
+
+
 
 <style>
  .nav-item .user-image {
@@ -124,6 +131,10 @@ else{
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
 
+
 </head>
+
 <body class="hold-transition sidebar-mini layout-fixed">
+  
 <div class="wrapper">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>

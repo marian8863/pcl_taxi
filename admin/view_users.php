@@ -9,9 +9,9 @@ $u_n = $_SESSION['user']['username'];
 $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
 
-$required_menu_name = 'view_vehicule'; // ✅ MUST be defined before include
+// $required_menu_name = 'view_users'; // ✅ MUST be defined before include
 // echo "Checking menu: " . $required_menu_name;
- include 'auth_check.php'; 
+//  include 'auth_check.php'; 
 
 ?>
 <!--END DON'T CHANGE THE ORDER-->
@@ -19,7 +19,7 @@ $required_menu_name = 'view_vehicule'; // ✅ MUST be defined before include
 <?php
 
 if(isset($_GET['get_id'])){
-    $vid=$_GET['get_id'];
+    $user_id=$_GET['get_id'];
 }
 ?>
 
@@ -34,12 +34,12 @@ if(isset($_GET['get_id'])){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Vehicule Detail</h1>
+            <h1 class="m-0 text-dark">Users Detail</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Vehicule Detail
+              <li class="breadcrumb-item ">Users Detail
               <?php
                   // echo  $Sdate = new DateTime("now", new DateTimeZone('Asia/Colombo'));
                   // date_default_timezone_set('UTC');
@@ -76,7 +76,7 @@ if(isset($_GET['get_id'])){
                 </div>
                 <!-- /.col -->
                 <div class="col-3">
-                    <a href="create_vehicule" class="btn btn-primary btn-block"> + Add</a>
+                    <a href="register" class="btn btn-primary btn-block"> + Add</a>
 
                 </div>
                 </div>
@@ -86,8 +86,11 @@ if(isset($_GET['get_id'])){
                   <thead>
                   <tr>
                     <!-- <th data-visible="false">Id</th> -->
-                    <th>vehicule ID</th>
-                    <th>vehicule</th>
+                    <th>Image</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>User Type</th>
                     <th>Action</th>
                     <!-- <th data-visible="false">Create Date</th> -->
                   </tr>
@@ -95,9 +98,9 @@ if(isset($_GET['get_id'])){
                   <?php
                     if(isset($_GET['delete_id']))
                     {                
-                        $v_id = $_GET['delete_id'];
+                        $d_id = $_GET['delete_id'];
 
-                        $sql = "DELETE from vehicule where v_id = $v_id";
+                        $sql = "DELETE from driver where d_id = $d_id";
 
                         if(mysqli_query($con,$sql))
                         { }
@@ -108,18 +111,25 @@ if(isset($_GET['get_id'])){
                   <tbody>
                
                     <?php  
-                    $sql="SELECT `v_id`,`Vehicule_num` FROM vehicule";         
+                    $sql="SELECT `id`,`username`,`email`,`phone`,`user_type`,`profile` FROM users where user_type IN ('admin', 'ADM','driver','enteries')" ;         
                     $res=$con->query($sql);
-                    while($row=$res->fetch_assoc()){    
+                    while($row=$res->fetch_assoc()){  
+                        
                             
                     ?>
+
+                    
                     <tr>
                     <!-- //<td>< $row['d_id']?></td> -->
-                        <td><?= $row['v_id']?></td>
-                        <td><?= $row['Vehicule_num']?></td>
+                        <td><?= $row['profile']?></td>
+                        <td><?= $row['username']?></td>
+                        <td><?= $row['email']?></td>
+                        <td><?= $row['phone']?></td>
+                        <td><?= $row['user_type']?></td>
                         <td>
-                            <a href="create_vehicule.php?get_id=<?= $row["v_id"]?>" class="btn btn-info"><i class="fas fa-edit"></i></a>
-                            <button  data-href="?delete_id=<?=$row["v_id"]?>" data-toggle="modal" data-target="#confirm-delete"  class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <a href="edit_profile.php?id=<?php echo $row['id']; ?>" class="btn btn-info"><i class="fas fa-users"></i></a>
+                            <a href="edit_menu.php?user_id=<?php echo $row['id']; ?>" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                            <button  data-href="" data-toggle="modal" data-target="#confirm-delete"  class="btn btn-danger"><i class="fas fa-trash"></i></button>
 
                         </td>
                     </tr>

@@ -9,6 +9,10 @@ $u_n = $_SESSION['user']['username'];
 $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
 
+$required_menu_name = 'view_tarif_type'; // ✅ MUST be defined before include
+// echo "Checking menu: " . $required_menu_name;
+ include 'auth_check.php'; 
+
 ?>
 <!--END DON'T CHANGE THE ORDER-->
 

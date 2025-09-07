@@ -11,11 +11,11 @@ if(isset($_GET['get_id'])){
     passenger.adresse_du_pick_up,
     passenger.adresse_de_depose,
     passenger.nb_de_passager,
-    passenger.user_id,
+    passenger.d_id,
     passenger.chauffeur_desc,
-    users.username,
-    users.phone,
-    users.user_desc,
+    driver.dname,
+    driver.dtp_num,
+    driver.driver_desc,
     passenger.Tarif,
     tarif_type.type_tt,
     select_an_option_desc.tm_id,
@@ -33,8 +33,8 @@ if(isset($_GET['get_id'])){
     who_give_booking.wg_desc,
     who_give_booking.wg_question
 
-    FROM passenger,option_tel,vehicule,type_mission,type_de_mission_desc,passenger_description,users,tarif_type,option_desc,select_an_option_desc,who_give_booking
-    WHERE passenger.p_id=option_tel.p_id and vehicule.v_id=passenger.Vehicule_num and type_mission.tm_id=passenger.tm_id and type_de_mission_desc.p_id=passenger.p_id and passenger_description.p_id=passenger.p_id and users.id=passenger.user_id and tarif_type.tt_id=passenger.tt_id and option_desc.p_id=passenger.p_id and select_an_option_desc.p_id=passenger.p_id and passenger.p_id=who_give_booking.p_id 
+    FROM passenger,option_tel,vehicule,type_mission,type_de_mission_desc,passenger_description,driver,tarif_type,option_desc,select_an_option_desc,who_give_booking
+    WHERE passenger.p_id=option_tel.p_id and vehicule.v_id=passenger.Vehicule_num and type_mission.tm_id=passenger.tm_id and type_de_mission_desc.p_id=passenger.p_id and passenger_description.p_id=passenger.p_id and driver.d_id=passenger.d_id and tarif_type.tt_id=passenger.tt_id and option_desc.p_id=passenger.p_id and select_an_option_desc.p_id=passenger.p_id and passenger.p_id=who_give_booking.p_id 
     
     and passenger.p_id=$pid";
       $result = mysqli_query($con,$sql);
@@ -47,10 +47,10 @@ if(isset($_GET['get_id'])){
           $adresse_du_pick_up=$row['adresse_du_pick_up'];
           $adresse_de_depose=$row['adresse_de_depose'];
           $nb_de_passager=$row['nb_de_passager'];
-          $user_id=$row['user_id'];
-          $username=$row['username'];
-          $phone=$row['phone'];
-          $user_desc=$row['user_desc'];
+          $d_id=$row['d_id'];
+          $dname=$row['dname'];
+          $dtp_num=$row['dtp_num'];
+          $driver_desc=$row['driver_desc'];
           $Vehicule_num=$row['Vehicule_num'];
           $cha_d=$row['chauffeur_desc'];
           $Tarif=$row['Tarif'];
@@ -92,7 +92,9 @@ if(isset($_GET['get_id'])){
             font-size:11px;
         }
     
-
+  td {
+    white-space: pre-wrap;
+  }
 
       </style>
 
@@ -115,7 +117,7 @@ if(isset($_GET['get_id'])){
           <li>SIRET : 840056022</li>
           <li>TVA : FR2084056022</li>
           <li>N° EVTC095180698</li>
-          <li>Email: pclfacture@gmail.com</li>
+          <li>Email: pariscablimo@gmail.com</li>
           <li>Tél.: +33 660 763 235</li>
           
           </ul>
@@ -165,11 +167,11 @@ if(isset($_GET['get_id'])){
 
                     <tr>
                     <th scope="row">Adresse du pick-up </th>
-                    <td><?php echo nl2br(($adresse_du_pick_up));?></td>
+                    <td><?php echo nl2br(htmlspecialchars($adresse_du_pick_up));?></td>
                     </tr>
                     <tr>
                     <th scope="row">Adresse de dépose</th>
-                    <td><?php echo nl2br($adresse_de_depose);?></td>
+                    <td><?php echo $adresse_de_depose;?></td>
                     </tr>
                     <tr>
                     <th scope="row">Nb. de passager </th>
@@ -204,9 +206,9 @@ if(isset($_GET['get_id'])){
                     </tr>
                     <tr>
                     <th scope="row">Chauffeur</th>
-                    <td><?php echo $username;?> | <?php echo $phone;?>
+                    <td><?php echo $dname;?> | <?php echo $dtp_num;?>
                     <br>
-                    <?php echo nl2br($cha_d);?>
+                    <?php echo $cha_d;?>
                     </td>
                     </tr>
                     <tr>
@@ -215,15 +217,14 @@ if(isset($_GET['get_id'])){
                     </tr>
                     <tr>
                     <th scope="row">Tarif</th>
-                    <td>
-                        <?php echo '€ '.$Tarif;?> | <?php echo $type_tt;?> 
+                    <td><?php echo '€ '.$Tarif;?> | <?php echo $type_tt;?> 
 
                     <?php
-                    if($user_desc == 'no_desc'){
+                    if($driver_desc == 'no_desc'){
                         // echo "hi";
 
                     }else{
-                         echo '<br>'.$user_desc;
+                         echo '<br> <br>'.$driver_desc;
                     }
                     ?>
                     </td>

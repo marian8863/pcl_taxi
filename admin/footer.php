@@ -51,6 +51,12 @@
 
 </div>
 <!-- ./wrapper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+<script>
+      $("input[data-bootstrap-switch]").each(function(){
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+    });
+</script>
 
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
@@ -103,6 +109,11 @@
 <!-- Select2 -->
 <script src="plugins/select2/js/select2.full.min.js"></script>
 
+
+
+
+
+
 <script>
         //delete model driver
 $('#confirm-delete').on('show.bs.modal', function(e) {
@@ -144,6 +155,16 @@ $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href
       "responsive": true,
     });
 
+
+    $('.user_view').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
 
 
 

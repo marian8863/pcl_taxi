@@ -10,21 +10,28 @@ $u_t = $_SESSION['user']['user_type'];
 $u_p = $_SESSION['user']['profile'];
 
 
-$vn=$dn=$sq=$psq=$op_q=$tdm=$cd=$op_tel_q=$tti=$wg_q=null;
+$vn=$dn=$sq=$psq=$op_q=$tdm=$cd=$op_tel_q=$tti=$wg_q=$pl=$dl=null;
 ?>
 <!--END DON'T CHANGE THE ORDER-->
 <?php
 
+// Fetch locations
+$locations = [];
+$result = $con->query("SELECT id, name FROM flight_locations ORDER BY name ASC");
+while ($row = $result->fetch_assoc()) {
+    $locations[] = $row;
+}
+
 if(isset($_GET['get_id'])){
   $pid=$_GET['get_id'];
-  $sql="SELECT passenger.passager_principal,passenger.date_de_prise_en_charge,passenger.Time,passenger.adresse_du_pick_up,tarif_type.type_tt,tarif_type.tt_id,
-  passenger.adresse_de_depose,passenger.nb_de_passager,passenger.d_id,passenger.Vehicule_num,passenger.chauffeur_desc,passenger.Tarif,passenger.tm_id,option_desc.op_desc,option_desc.op_question,passenger_description.passenger_select_quesntion,
-  passenger_description.passenger_select_desc,type_de_mission_desc.type_desc,type_de_mission_desc.select_quesntion,driver.dname,driver.dtp_num,type_mission.type_m,option_tel.op_tel_question,option_tel.op_tel_desc,select_an_option_desc.tm_desc,who_give_booking.wg_desc,who_give_booking.wg_question
+  $sql="SELECT passenger.passager_principal,passenger.date_de_prise_en_charge,passenger.Time,passenger.pickup_location,passenger.adresse_du_pick_up,tarif_type.type_tt,tarif_type.tt_id,passenger.dropoff_location,
+  passenger.adresse_de_depose,passenger.nb_de_passager,passenger.user_id,passenger.Vehicule_num,passenger.chauffeur_desc,passenger.Tarif,passenger.tm_id,option_desc.op_desc,option_desc.op_question,passenger_description.passenger_select_quesntion,
+  passenger_description.passenger_select_desc,type_de_mission_desc.type_desc,type_de_mission_desc.select_quesntion,users.username,users.phone,type_mission.type_m,option_tel.op_tel_question,option_tel.op_tel_desc,select_an_option_desc.tm_desc,who_give_booking.wg_desc,who_give_booking.wg_question
   
   
-  from passenger ,option_desc,passenger_description ,type_de_mission_desc,driver,type_mission,option_tel,select_an_option_desc,tarif_type,who_give_booking
+  from passenger ,option_desc,passenger_description ,type_de_mission_desc,users,type_mission,option_tel,select_an_option_desc,tarif_type,who_give_booking
   
-  WHERE passenger.p_id=option_desc.p_id and passenger.p_id=passenger_description.p_id and passenger.p_id=type_de_mission_desc.p_id and passenger.tm_id=type_mission.tm_id and passenger.d_id=driver.d_id and  passenger.p_id=option_tel.p_id and passenger.tm_id=select_an_option_desc.tm_id and passenger.p_id=select_an_option_desc.p_id and passenger.tt_id=tarif_type.tt_id and passenger.p_id=who_give_booking.p_id and
+  WHERE passenger.p_id=option_desc.p_id and passenger.p_id=passenger_description.p_id and passenger.p_id=type_de_mission_desc.p_id and passenger.tm_id=type_mission.tm_id and passenger.user_id=users.id and  passenger.p_id=option_tel.p_id and passenger.tm_id=select_an_option_desc.tm_id and passenger.p_id=select_an_option_desc.p_id and passenger.tt_id=tarif_type.tt_id and passenger.p_id=who_give_booking.p_id and
   passenger.p_id=$pid";
     $result = mysqli_query($con,$sql);
     if(mysqli_num_rows($result)==1) {       
@@ -32,11 +39,13 @@ if(isset($_GET['get_id'])){
         $pp=$row['passager_principal'];
         $dd=$row['date_de_prise_en_charge'];
         $tm=$row['Time'];
+        $pl=$row['pickup_location'];
         $pu=$row['adresse_du_pick_up'];
+        $dl=$row['dropoff_location'];
         $dp=$row['adresse_de_depose'];
         $np=$row['nb_de_passager'];
-        $dn=$row['d_id'];
-        $dtn=$row['dtp_num'];
+        $dn=$row['user_id'];
+        $dtn=$row['phone'];
         $vn=$row['Vehicule_num'];
         $cha_d=$row['chauffeur_desc'];
         $ta=$row['Tarif'];
@@ -256,21 +265,125 @@ if(isset($_GET['get_id'])){
                     </div>
                   </div>
 
-                  <div class="row">
+                  <!-- <div class="row">
                     <div class="col-sm-6">
-                      <!-- textarea -->
+                     
                       <div class="form-group">
                         <label>Adresse du pick-up</label>
-                        <textarea class="form-control" rows="3" placeholder="Enter ..." name="adresse_du_pick_up" required><?php if(isset($_GET['get_id'])){ echo $pu;}?></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Enter ..." name="adresse_du_pick_up" required><php if(isset($_GET['get_id'])){ echo (htmlspecialchars($pu)); } ?></textarea>
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Adresse de dépose</label>
-                        <textarea class="form-control" rows="3" placeholder="Enter ..."  name="adresse_de_depose" required><?php if(isset($_GET['get_id'])){ echo $dp;}?></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Enter ..."  name="adresse_de_depose" required><php if(isset($_GET['get_id'])){ echo (htmlspecialchars($dp));}?></textarea>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
+
+
+                          <!-- Pickup Location -->
+<!-- Pickup Location -->
+<div class="row">
+  <div class="col-sm-6">
+    <div class="form-group">
+      <label>Pickup Location</label>
+      <select name="pickup_location" id="pickup_location" class="form-control custom-select" required>
+        <option value="">-- Select --</option>
+        <?php foreach ($locations as $loc): ?>
+          <option value="<?= $loc['id'] ?>" <?= ($loc['id'] == $pl) ? 'selected' : '' ?>>
+            <?= htmlspecialchars($loc['name']) ?>
+          </option>
+        <?php endforeach; ?>
+        <option value="Others" <?= ($pl === 'Others') ? 'selected' : '' ?>>Others</option>
+      </select>
+      <textarea name="adresse_du_pick_up" id="pickup_desc" class="form-control mt-2 hidden"
+        placeholder="Enter pickup details"><?php if(isset($_GET['get_id'])){ echo htmlspecialchars($pu); } ?></textarea>
+    </div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="form-group">
+      <label>Drop-off Location</label>
+      <select name="dropoff_location" id="dropoff_location" class="form-control custom-select" required>
+        <option value="">-- Select --</option>
+        <?php foreach ($locations as $loc): ?>
+          <option value="<?= $loc['id'] ?>" <?= ($loc['id'] == $dl) ? 'selected' : '' ?>>
+            <?= htmlspecialchars($loc['name']) ?>
+          </option>
+        <?php endforeach; ?>
+        <option value="Others" <?= ($dl === 'Others') ? 'selected' : '' ?>>Others</option>
+      </select>
+      <textarea name="adresse_de_depose" id="dropoff_desc" class="form-control mt-2 hidden"
+        placeholder="Enter drop-off details"><?php if(isset($_GET['get_id'])){ echo htmlspecialchars($dp); } ?></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleExtra(selectEl, textareaId) {
+    const textarea = document.getElementById(textareaId);
+    if (selectEl.value) {
+      textarea.classList.remove("hidden");
+      if (selectEl.value === "Others") {
+        textarea.setAttribute("required", "required");
+      } else {
+        textarea.removeAttribute("required");
+      }
+    } else {
+      textarea.classList.add("hidden");
+      textarea.removeAttribute("required");
+    }
+  }
+
+  document.getElementById('pickup_location').addEventListener('change', function () {
+    toggleExtra(this, 'pickup_desc');
+    syncDropdowns();
+  });
+
+  document.getElementById('dropoff_location').addEventListener('change', function () {
+    toggleExtra(this, 'dropoff_desc');
+    syncDropdowns();
+  });
+
+  function syncDropdowns() {
+    const pickupSelect = document.getElementById('pickup_location');
+    const dropoffSelect = document.getElementById('dropoff_location');
+    const selectedPickup = pickupSelect.value;
+    const selectedDropoff = dropoffSelect.value;
+
+    for (let option of dropoffSelect.options) {
+      if (option.value && option.value !== "Others") {
+        option.disabled = (option.value === selectedPickup);
+        option.classList.toggle("text-muted", option.disabled);
+      }
+    }
+    for (let option of pickupSelect.options) {
+      if (option.value && option.value !== "Others") {
+        option.disabled = (option.value === selectedDropoff);
+        option.classList.toggle("text-muted", option.disabled);
+      }
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    toggleExtra(document.getElementById('pickup_location'), 'pickup_desc');
+    toggleExtra(document.getElementById('dropoff_location'), 'dropoff_desc');
+    syncDropdowns();
+  });
+</script>
+
+<style>
+  .hidden {
+    display: none;
+  }
+</style>
+
+
+
+
+
+                  
 
                   <div class="row">
                     <div class="col-sm-6">
@@ -324,17 +437,18 @@ if(isset($_GET['get_id'])){
                       <!-- text input -->
                       <div class="form-group">
                         <label>Chauffeur</label>
-                        <select class="form-control Chauffeur_select" style="width: 100%;" name="d_id" id="didx"  onchange="showTelNum(this.value)" >
+                        <select class="form-control Chauffeur_select" style="width: 100%;" name="user_id" id="didx"  onchange="showTelNum(this.value)" >
                         <option value="null" selected disabled >---- Select the Chauffeur ---- </option>
                         <?php
-                        $sql="select * from `driver`";
+                        $sql="SELECT `id`, `username` FROM `users` WHERE `user_type` IN ('driver', 'ADM')";
                         $result = mysqli_query($con,$sql);
                         if (mysqli_num_rows($result) > 0 ) {
                         while($row=mysqli_fetch_assoc($result)){
-                            echo '<option  value="'.$row["d_id"].'" required';
-                            if($row["d_id"]== $dn) echo ' selected';
-                            echo '>'.$row["dname"].'</option>';
-                        }}   
+                            echo '<option  value="'.$row["id"].'" required';
+                            if($row["id"]== $dn) echo ' selected';
+                            echo '>'.$row["username"].'</option>';
+                        }}
+                           
                         ?>
                         </select>
                       </div>
@@ -352,7 +466,7 @@ if(isset($_GET['get_id'])){
                     <div class="col-sm-12">
                       <div class="form-group">
                         <label>Chauffeur Desc</label>
-                        <textarea class="form-control" rows="3" placeholder="Enter ..."  name="chauffeur_desc" required><?php if(isset($_GET['get_id'])){ echo $cha_d;}else{ echo "Merci d’envoyer Statut : En route / Sur place / À bord / Déposé ";}?></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Enter ..."  name="chauffeur_desc" required><?php if(isset($_GET['get_id'])){ echo (htmlspecialchars($cha_d));}else{ echo "Merci d’envoyer Statut : En route / Sur place / À bord / Déposé ";}?></textarea>
                       </div>
                     </div>
                   </div>
@@ -516,10 +630,12 @@ if(isset($_POST['add'])){
 
     !empty($_POST['date_de_prise_en_charge'])&& 
     !empty($_POST['Time'])&& 
+    !empty($_POST['pickup_location'])&& 
     !empty($_POST['adresse_du_pick_up'])&& 
+    !empty($_POST['dropoff_location'])&& 
     !empty($_POST['adresse_de_depose'])&& 
     !empty($_POST['nb_de_passager'])&& 
-    !empty($_POST['d_id'])&&
+    !empty($_POST['user_id'])&&
     !empty($_POST['chauffeur_desc'])&&
     !empty($_POST['Vehicule_num'])&&
     !empty($_POST['Tarif'])&&
@@ -531,18 +647,20 @@ if(isset($_POST['add'])){
  
         $date_de_prise_en_charge=$_POST['date_de_prise_en_charge'];
         $Time=$_POST['Time'];
+        $pickup_location=$_POST['pickup_location'];
         $adresse_du_pick_up=$_POST['adresse_du_pick_up'];
+         $dropoff_location=$_POST['dropoff_location'];
         $adresse_de_depose=$_POST['adresse_de_depose'];
         $nb_de_passager=$_POST['nb_de_passager'];
-        $d_id=$_POST['d_id'];
+        $user_id=$_POST['user_id'];
         $Vehicule_num=$_POST['Vehicule_num'];
         $chauffeur_desc=$_POST['chauffeur_desc'];
         $Tarif=$_POST['Tarif'];
         $Tarif_Types=$_POST['Tarif_Types'];
         $tm_id=$_POST['tm_id'];
 
-        $sql='INSERT INTO `passenger` (`passager_principal`,`date_de_prise_en_charge`,`Time`,`adresse_du_pick_up`,`adresse_de_depose`,`nb_de_passager`,`d_id`,`Vehicule_num`,`chauffeur_desc`,`Tarif`,`tt_id`,`tm_id`) 
-        values("'.$passager_principal.'","'.$date_de_prise_en_charge.'","'.$Time.'","'.$adresse_du_pick_up.'","'.$adresse_de_depose.'","'.$nb_de_passager.'","'.$d_id.'","'.$Vehicule_num.'","'.$chauffeur_desc.'","'.$Tarif.'","'.$Tarif_Types.'","'.$tm_id.'")';
+        $sql='INSERT INTO `passenger` (`passager_principal`,`date_de_prise_en_charge`,`Time`,`pickup_location`,`adresse_du_pick_up`,`dropoff_location`,`adresse_de_depose`,`nb_de_passager`,`user_id`,`Vehicule_num`,`chauffeur_desc`,`Tarif`,`tt_id`,`tm_id`) 
+        values("'.$passager_principal.'","'.$date_de_prise_en_charge.'","'.$Time.'","'.$pickup_location.'","'.$adresse_du_pick_up.'","'.$dropoff_location.'","'.$adresse_de_depose.'","'.$nb_de_passager.'","'.$user_id.'","'.$Vehicule_num.'","'.$chauffeur_desc.'","'.$Tarif.'","'.$Tarif_Types.'","'.$tm_id.'")';
         if(mysqli_query($con,$sql)){
 
           echo '<script>';
@@ -783,10 +901,12 @@ if(isset($_POST['edit'])){
   if(!empty($_POST['passager_principal'])&& 
   !empty($_POST['date_de_prise_en_charge'])&& 
   !empty($_POST['Time'])&& 
+   !empty($_POST['pickup_location'])&& 
   !empty($_POST['adresse_du_pick_up'])&& 
+  !empty($_POST['dropoff_location'])&& 
   !empty($_POST['adresse_de_depose'])&& 
   !empty($_POST['nb_de_passager'])&& 
-  !empty($_POST['d_id'])&&
+  !empty($_POST['user_id'])&&
   !empty($_POST['Vehicule_num'])&&
   !empty($_POST['chauffeur_desc'])&&
   !empty($_POST['Tarif'])&&
@@ -798,10 +918,12 @@ if(isset($_POST['edit'])){
     $passager_principal=$_POST['passager_principal'];
     $date_de_prise_en_charge=$_POST['date_de_prise_en_charge'];
     $Time=$_POST['Time'];
+    $pickup_location=$_POST['pickup_location'];
     $adresse_du_pick_up=$_POST['adresse_du_pick_up'];
+    $dropoff_location=$_POST['dropoff_location'];
     $adresse_de_depose=$_POST['adresse_de_depose'];
     $nb_de_passager=$_POST['nb_de_passager'];
-    $d_id=$_POST['d_id'];
+    $user_id=$_POST['user_id'];
     $Vehicule_num=$_POST['Vehicule_num'];
     $chauffeur_desc=$_POST['chauffeur_desc'];
     $Tarif=$_POST['Tarif'];
@@ -814,10 +936,12 @@ if(isset($_POST['edit'])){
   `passager_principal` ="'.$passager_principal.'",
   `date_de_prise_en_charge`="'.$date_de_prise_en_charge.'",
   `Time`="'.$Time.'",
+  `pickup_location`="'.$pickup_location.'",
   `adresse_du_pick_up`="'.$adresse_du_pick_up.'",
+  `dropoff_location`="'.$dropoff_location.'",
   `adresse_de_depose`="'.$adresse_de_depose.'",
   `nb_de_passager`="'.$nb_de_passager.'",
-  `d_id`="'.$d_id.'",
+  `user_id`="'.$user_id.'",
   `Vehicule_num`="'.$Vehicule_num.'",
   `chauffeur_desc`="'.$chauffeur_desc.'",
   `Tarif`="'.$Tarif.'",
@@ -1157,13 +1281,12 @@ function showSelectOption(val) {
     };
     xmlhttp.open("POST", "controller/getTelNum", true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xmlhttp.send("driver=" + val);
+    xmlhttp.send("users=" + val);
 }
 
-
-
-
 </script>
+
+
 
 <!--BLOCK#3 START DON'T CHANGE THE ORDER-->
 <?php include_once("footer.php"); ?>
